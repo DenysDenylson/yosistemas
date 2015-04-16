@@ -24,6 +24,7 @@ describe TemasController do
       
       expect(assigns(:temas)).to start_with(tema1)
       expect(assigns(:temas)).to end_with(tema2)
+      expect(assigns(:grupo)).to eq(grupo)
     end
 
     it "obtiene todos los temas del grupo especificado" do  
@@ -48,6 +49,7 @@ describe TemasController do
       
       expect(assigns(:temas)).to start_with(tema1)
       expect(assigns(:temas)).to end_with(tema2)
+      expect(assigns(:grupo)).to eq(grupo)
     end
 
     it "muestra la vista index" do
