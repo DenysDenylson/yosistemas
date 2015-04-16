@@ -9,8 +9,7 @@ describe TemasController do
   #ATENCION: El uso de factory girl ayuda a hacer los specs m'as simples. Sin embargo, tambi'en m'as lentos ya 
   # que acceden a la BD en lugar de mocks o stubs
   describe 'GET #index' do
-    grupo = FactoryGirl.build(:grupo)
-    it "obtiene todos los temas de grupo publico en un arreglo" do  
+    it "obtiene todos los temas de grupo publico" do  
       
       tema1 = FactoryGirl.create(:tema, titulo: 'Tema 1')
       tema2 = FactoryGirl.create(:tema, titulo: 'Tema 2')
@@ -18,12 +17,34 @@ describe TemasController do
       grupo = Grupo.find(1)  #grupo publico
       grupo.temas << tema1
       tema1.grupos_pertenece << grupo
+      grupo.temas << tema2
+      tema2.grupos_pertenece << grupo
 
+      get :index
+      
+      expect(assigns(:temas)).to start_with(tema1)
+      expect(assigns(:temas)).to end_with(tema2)
+    end
+
+    it "obtiene todos los temas del grupo especificado" do  
+      grupo = FactoryGirl.create(:grupo)
+      
+      tema1 = FactoryGirl.create(:tema, titulo: 'Tema 1')
+      tema2 = FactoryGirl.create(:tema, titulo: 'Tema 2')
+
+      grupo.temas << tema1
+      tema1.grupos_pertenece << grupo
+      tema1.grupos_dirigidos << grupo.id.to_s
 
       grupo.temas << tema2
       tema2.grupos_pertenece << grupo
+      tema2.grupos_dirigidos << grupo.id.to_s      
+
+      grupo.save
+      tema1.save
+      tema2.save
       
-      get :index
+      get :index, :id => grupo.id
       
       expect(assigns(:temas)).to start_with(tema1)
       expect(assigns(:temas)).to end_with(tema2)
