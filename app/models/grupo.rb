@@ -81,7 +81,7 @@ class Grupo < ActiveRecord::Base
       if grupo_id != nil && Grupo.find(grupo_id).habilitado
         grupo = Grupo.find(grupo_id)       
       else
-        grupo = Grupo.find(1)
+        grupo = Grupo.obtener_grupo_publico
       end
     end
 
@@ -93,6 +93,9 @@ class Grupo < ActiveRecord::Base
         end
       end
       return temas_aprobados
+    end
 
+    def self.obtener_grupo_publico
+      find_by_llave('publico')
     end
 end

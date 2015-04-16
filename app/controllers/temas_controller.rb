@@ -303,7 +303,7 @@ before_filter :grupos
     end
     
     def grupos
-        @grupo = Grupo.find(1)
+        @grupo = Grupo.obtener_grupo_publico
     end
 
     def notificacion_push(id_grupos, tema)
