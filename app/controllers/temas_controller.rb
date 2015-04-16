@@ -3,18 +3,11 @@ class TemasController < ApplicationController
 skip_before_filter :require_log_in,:only=>[:index,:search,:searchByDescription,:show,:searchtitulo]
 before_filter :grupos
   def index
-     @temas = Array.new 
-   if params[:id] != nil && Grupo.find(params[:id]).habilitado
-        @grupo = Grupo.find(params[:id])       
-      else
-        @grupo = Grupo.find(1)
-      end
-       @grupo.temas.each do |tema|
-          if tema.aprobado?(@grupo.id) || @grupo.llave == "publico"
-            @temas << tema
-          end
-        end
-        @ides=sacarIds(@temas)
+    @temas = Array.new 
+    @grupo = Grupo.buscar(params[:id])
+    @temas = @grupo.temas_aprobados
+    
+    @ides=sacarIds(@temas)
   end
 
 

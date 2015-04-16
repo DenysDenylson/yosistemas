@@ -76,4 +76,23 @@ class Grupo < ActiveRecord::Base
         self.llave = "publico"
       end
     end
+
+    def self.buscar(grupo_id) 
+      if grupo_id != nil && Grupo.find(grupo_id).habilitado
+        grupo = Grupo.find(grupo_id)       
+      else
+        grupo = Grupo.find(1)
+      end
+    end
+
+    def temas_aprobados
+      temas_aprobados = Array.new
+      temas.each do |tema|
+        if tema.aprobado?(id) || llave == "publico"
+          temas_aprobados << tema
+        end
+      end
+      return temas_aprobados
+
+    end
 end
