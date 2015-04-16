@@ -10,7 +10,6 @@ describe TemasController do
   # que acceden a la BD en lugar de mocks o stubs
   describe 'GET #index' do
     it "obtiene todos los temas de grupo publico" do  
-      
       grupo = FactoryGirl.create(:grupo_publico)
       tema1 = FactoryGirl.create(:tema, titulo: 'Tema 1')
       tema2 = FactoryGirl.create(:tema, titulo: 'Tema 2')
@@ -55,7 +54,7 @@ describe TemasController do
 
     it "muestra la vista index" do
       grupo = FactoryGirl.create(:grupo_publico)
-      
+
       get :index
       
       expect(response).to render_template :index
