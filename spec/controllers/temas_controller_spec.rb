@@ -121,7 +121,14 @@ describe TemasController do
  # TODO: se comentan por ahora ya que no estan pasando
   describe 'POST #create' do
 
+    it "Prueba del create" do
+      # suscripcion = FactoryGirl.create(:suscripcion_tema)
 
+      # expect{
+      #   post :create, suscripcion_tema: attributes_for(1,2)
+      # }.to change(SuscripcionTema, :count).by(1)
+
+    end
     
     # grupo = FactoryGirl.build(:grupo)
     # context 'con atributos validos' do
