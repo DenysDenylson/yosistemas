@@ -1,0 +1,7 @@
+NOS CREAMO UN PARTIAL CON LA SIGUIENTE CONVENCION => "_nombrePartial.html.erb"
+
+<%= render(:partial => "nombrePartial", :locals => {:f => f} )  %>
+
+
+HELPERS = logica del negocio
+PARTIALS = html reutilizable 

@@ -22,6 +22,7 @@ class GruposController < ApplicationController
     end
     redirect_to (:back)
   end
+
   
   def buscar
     @grupos = Grupo.where("nombre LIKE ?", "%#{params[:nombre]}%").page(params[:page]).per(5)

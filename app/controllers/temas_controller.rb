@@ -111,47 +111,41 @@ before_filter :grupos
   def create
     @tema = Tema.new(tema_params)
     @tema.usuario_id = current_user.id
-
     if params[:grupos] != nil && @tema.save
       params[:grupos].each do |grupo|
         grupi = Grupo.find(grupo)
         grupi.temas << @tema
+        # grupi.asignar_temas(@tema)
         @tema.grupos_pertenece << grupo
         grupi.save
         if current_user.rol == "Docente" || !Grupo.find(grupo).moderacion 
           @tema.grupos_dirigidos << grupo
         end
       end
-
       @tema.save
+
       add_attached_files(@tema.id)
-      
-      @suscripcion=SuscripcionTema.new
-      @suscripcion.usuario_id=current_user.id
-      @suscripcion.tema_id=@tema.id
-      @suscripcion.save
+      add_suscripcion(current_user.id, @tema.id)
       
       if current_user.rol == "Docente"        
         notificacion_push(params[:grupos], @tema)
         notificar_por_email(params[:grupos], @tema)
       end
-
       grupos_para_notificar_si_moderacion_falsa = Array.new
       grupos_para_notificar_si_moderacion_verdadera = Array.new
 
-
       if current_user.rol == "Estudiante" 
-          params[:grupos].each do |grupo_id|
-            if Grupo.find(grupo_id).moderacion
-              grupos_para_notificar_si_moderacion_verdadera << grupo_id
-            else
-              grupos_para_notificar_si_moderacion_falsa << grupo_id
-            end        
-            notificar_creacion(grupos_para_notificar_si_moderacion_verdadera, @tema)
-            notificacion_push(grupos_para_notificar_si_moderacion_falsa, @tema)
-            notificar_por_email(grupos_para_notificar_si_moderacion_falsa, @tema)
-          end
+        params[:grupos].each do |grupo_id|
+          if Grupo.find(grupo_id).moderacion
+            grupos_para_notificar_si_moderacion_verdadera << grupo_id
+          else
+            grupos_para_notificar_si_moderacion_falsa << grupo_id
+          end        
+          notificar_creacion(grupos_para_notificar_si_moderacion_verdadera, @tema)
+          notificacion_push(grupos_para_notificar_si_moderacion_falsa, @tema)
+          notificar_por_email(grupos_para_notificar_si_moderacion_falsa, @tema)
         end
+      end
 
       flash[:alert] = 'Tema creado Exitosamente!'
       redirect_to '/temas/'+@tema.id.to_s
@@ -170,6 +164,13 @@ before_filter :grupos
         @archivo.save
         end
       end
+    end
+
+    def add_suscripcion (user_id, tema_id)
+      @suscripcion=SuscripcionTema.new
+      @suscripcion.usuario_id=user_id
+      @suscripcion.tema_id=tema_id
+      @suscripcion.save
     end
 
   public

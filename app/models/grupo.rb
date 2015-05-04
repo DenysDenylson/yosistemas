@@ -42,6 +42,8 @@ class Grupo < ActiveRecord::Base
       return resp
     end
 
+    
+
     def grupo_publico?
       respuesta = false
       if llave=='publico' 
