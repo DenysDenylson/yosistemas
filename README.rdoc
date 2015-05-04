@@ -9,3 +9,6 @@ Universidad Católica Boliviana Cochabamba.
 
 * Archivo con varios comandos utiles (cheatsheet git, heroku, rvm, etc):
     - https://github.com/israelantezana/yosistemas/blob/master/cheatsheet.md
+
+
+esto no deberuia estar eb ek naster
