@@ -2,12 +2,12 @@ require 'pusher'
 class TemasController < ApplicationController
 skip_before_filter :require_log_in,:only=>[:index,:search,:searchByDescription,:show,:searchtitulo]
 before_filter :grupos
+
   def index
     @temas = Array.new 
     @grupo = Grupo.buscar(params[:id])
+    # @temas = Tema.all.decorate
     @temas = @grupo.temas_aprobados
-    
-    @ides=sacarIds(@temas)
   end
 
 
@@ -32,29 +32,9 @@ before_filter :grupos
 
 
   def ordertable
-    @temas = Array.new
-    if(params[:id] != nil)
-      @grupo = Grupo.find(params[:id])
-    else
-      @grupo = Grupo.find(1)
-    end
-    if params[:themes] != nil && params[:themes] != ""
-      @ids = params[:themes]
-      @ids.slice!(0)
-      @ids=@ids.split("-")
-      @ids.each do |id|
-        if id != "" && id != nil
-          @temas.push(Tema.find(id))
-        end
-      end
-      if params[:var] == "titulo"
-        @temas.sort! { |a,b| a.titulo.downcase <=> b.titulo.downcase }
-      else
-        #@temas.sort! { |a,b| a.cuerpo.downcase <=> b.cuerpo.downcase }
-        @temas.sort! { |a,b| a.created_at <=> b.created_at }
-      end
-    end
-    @ides=sacarIds(@temas)
+    @grupo = Grupo.buscar(params[:id])
+    @temas = obtener_temas_por_lista_de_ids(params[:themes])
+    @temas = ordenar_temas_por_criterio(@temas, params[:var])
     @temas= Kaminari.paginate_array(@temas).page(params[:page]).per(5)
     render 'index'
   end
@@ -400,5 +380,27 @@ before_filter :grupos
         concatenacion=concatenacion+"-"+tema.id.to_s
       end
       return concatenacion
+    end
+
+    def obtener_temas_por_lista_de_ids(ids_de_temas)
+      temas = Array.new
+      if ids_de_temas != nil && ids_de_temas != ""
+        lista_de_ids = ids_de_temas.split("-")
+        lista_de_ids.each do |id|
+          if id != "" && id != nil
+            temas.push(Tema.find(id))
+          end
+        end
+      end
+      temas
+    end
+
+    def ordenar_temas_por_criterio(temas, criterio)
+      if(criterio == 'titulo')
+        lista_de_temas_ordenado = temas.sort! { |a,b| a.titulo.downcase <=> b.titulo.downcase }
+      else
+        lista_de_temas_ordenado = temas.sort! { |a,b| a.created_at <=> b.created_at }
+      end
+      lista_de_temas_ordenado
     end
 end

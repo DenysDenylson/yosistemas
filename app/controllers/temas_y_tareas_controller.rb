@@ -110,18 +110,12 @@ class TemasYTareasController < ApplicationController
   end
 
   def Unir_Tareas_y_Temas(id)
-    if( params[:id] != nil && Grupo.find(params[:id]).habilitado)
-       @grupo = Grupo.find(params[:id])
-    else
-       @grupo = Grupo.find(1)
-       redirect_to temas_path
-    end
-    if(params[:id]=="1")
+    @grupo = Grupo.buscar(id)
+    if @grupo.grupo_publico?
       redirect_to temas_path
-    else
-      @temas = @grupo.temas.order("updated_at DESC").page(params[:page]).per(3)
-      @tareas = @grupo.tareas.order("updated_at DESC").page(params[:page]).per(3)
-      return @all = (@temas+@tareas).sort_by(&:created_at).reverse
     end
+    @temas = @grupo.temas.order("updated_at DESC").page(params[:page]).per(3)
+    @tareas = @grupo.tareas.order("updated_at DESC").page(params[:page]).per(3)
+    return @all = (@temas+@tareas).sort_by(&:created_at).reverse
   end
 end

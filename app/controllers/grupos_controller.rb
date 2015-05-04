@@ -4,7 +4,7 @@ class GruposController < ApplicationController
   
   def index
     @grupos = Grupo.all_habilitados.page(params[:page]).per(5)
-    @grupo = Grupo.find(1)
+    @grupo = Grupo.obtener_grupo_publico
   end
 
   def deshabilitar_grupo
@@ -48,7 +48,7 @@ class GruposController < ApplicationController
     else
       @grupo_nuevo = Grupo.new
     end
-      @grupo = Grupo.find(1)
+      @grupo = Grupo.obtener_grupo_publico
   end
 
   def show
@@ -122,11 +122,7 @@ class GruposController < ApplicationController
     end
 
     def grupos
-      if(params[:id] != nil && Grupo.find(params[:id]).habilitado)
-        @grupo = Grupo.find(params[:id])
-      else
-        @grupo = Grupo.find(1)
-      end
+      @grupo = Grupo.buscar(params[:id])
     end
 
     def redirigir_a(grupo)

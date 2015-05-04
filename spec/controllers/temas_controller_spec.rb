@@ -9,21 +9,24 @@ describe TemasController do
   #ATENCION: El uso de factory girl ayuda a hacer los specs m'as simples. Sin embargo, tambi'en m'as lentos ya 
   # que acceden a la BD en lugar de mocks o stubs
   describe 'GET #index' do
+
     it "obtiene todos los temas de grupo publico" do  
       grupo = FactoryGirl.create(:grupo_publico)
       tema1 = FactoryGirl.create(:tema, titulo: 'Tema 1')
       tema2 = FactoryGirl.create(:tema, titulo: 'Tema 2')
+      tema3 = FactoryGirl.create(:tema, titulo: 'Tema 3')
 
-      #grupo = Grupo.find(1)  #grupo publico
       grupo.temas << tema1
       tema1.grupos_pertenece << grupo
       grupo.temas << tema2
       tema2.grupos_pertenece << grupo
+      grupo.temas << tema3
+      tema3.grupos_pertenece << grupo
 
       get :index
       
-      expect(assigns(:temas)).to start_with(tema1)
-      expect(assigns(:temas)).to end_with(tema2)
+      expect(assigns(:temas)).to start_with(tema3)
+      expect(assigns(:temas)).to end_with(tema1)
       expect(assigns(:grupo)).to eq(grupo)
     end
 
@@ -47,14 +50,13 @@ describe TemasController do
       
       get :index, :id => grupo.id
       
-      expect(assigns(:temas)).to start_with(tema1)
-      expect(assigns(:temas)).to end_with(tema2)
+      expect(assigns(:temas)).to start_with(tema2)
+      expect(assigns(:temas)).to end_with(tema1)
       expect(assigns(:grupo)).to eq(grupo)
     end
 
     it "muestra la vista index" do
       grupo = FactoryGirl.create(:grupo_publico)
-
       get :index
       
       expect(response).to render_template :index
@@ -62,6 +64,7 @@ describe TemasController do
   end
   describe 'GET #new' do
     it "asigna un nuevo tema a @tema" do
+      grupo = FactoryGirl.create(:grupo_publico)
       get :new
       expect(assigns(:tema)).to be_a_new(Tema)
     end
@@ -70,6 +73,48 @@ describe TemasController do
       
       get :new
       expect(response).to render_template :new
+    end
+  end
+
+  describe 'GET #ordertable' do
+    it "Muestra todos los temas que pertenecen a un grupo publico ordenados alfabeticamente por el titulo" do
+      grupo = FactoryGirl.create(:grupo_publico)
+      tema1 = FactoryGirl.create(:tema, titulo: 'mi tema 1')
+      tema2 = FactoryGirl.create(:tema, titulo: 'otro tema 2')
+      tema3 = FactoryGirl.create(:tema, titulo: 'este tema 3')
+
+      grupo.temas << tema1
+      tema1.grupos_pertenece << grupo
+      grupo.temas << tema2
+      tema2.grupos_pertenece << grupo
+      grupo.temas << tema3
+      tema3.grupos_pertenece << grupo
+
+      get :ordertable, {:id=>grupo.id.to_s, :themes=>tema1.id.to_s+'-'+tema2.id.to_s+'-'+tema3.id.to_s, :var=>'titulo'}
+      
+      expect(assigns(:temas)).to start_with(tema3)
+      expect(assigns(:temas)).to end_with(tema2)
+      expect(assigns(:grupo)).to eq(grupo)
+    end
+
+    it "Muestra todos los temas que pertenecen a un grupo publico ordenados alfabeticamente por la fecha" do
+      grupo = FactoryGirl.create(:grupo_publico)
+      tema1 = FactoryGirl.create(:tema, titulo: 'mi tema 1')
+      tema2 = FactoryGirl.create(:tema, titulo: 'otro tema 2')
+      tema3 = FactoryGirl.create(:tema, titulo: 'este tema 3')
+
+      grupo.temas << tema1
+      tema1.grupos_pertenece << grupo
+      grupo.temas << tema2
+      tema2.grupos_pertenece << grupo
+      grupo.temas << tema3
+      tema3.grupos_pertenece << grupo
+
+      get :ordertable, {:id=>'1', :themes=>'3-1-2', :var=>'fecha'}
+      
+      expect(assigns(:temas)).to start_with(tema1)
+      expect(assigns(:temas)).to end_with(tema3)
+      expect(assigns(:grupo)).to eq(grupo)
     end
   end
 
@@ -122,6 +167,7 @@ describe TemasController do
 
   end
 =end
+
   describe "PUT update" do
     grupo = FactoryGirl.build(:grupo)
     before :each do

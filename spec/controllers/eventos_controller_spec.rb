@@ -9,7 +9,7 @@ describe EventosController do
   #ATENCION: El uso de factory girl ayuda a hacer los specs m'as simples. Sin embargo, tambi'en m'as lentos ya 
   # que acceden a la BD en lugar de mocks o stubs
   describe 'GET #index' do
-    it "obtiene todos los temas de grupo publico" do  
+    it "obtiene todos los eventos de grupo publico" do  
       grupo = FactoryGirl.create(:grupo_publico)
       evento1 = FactoryGirl.create(:evento)
       evento2 = FactoryGirl.create(:evento)

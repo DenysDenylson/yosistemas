@@ -4,17 +4,9 @@ class EventosController < ApplicationController
   before_filter :grupos
   # GET /eventos
   def index
-     @eventos = Array.new 
-   if params[:grupo] != nil && Grupo.find(params[:grupo]).habilitado
-        @grupo = Grupo.find(params[:grupo])       
-      else
-        @grupo = Grupo.find(1)
-      end
-       @grupo.eventos.each do |evento|
-          if evento.aprobado?(@grupo.id) || @grupo.llave == "publico"
-            @eventos << evento
-          end
-        end
+    eventos = Array.new
+    @grupo = Grupo.buscar(params[:grupo])
+    @eventos = @grupo.eventos_aprobados
   end
 
 
@@ -125,7 +117,7 @@ class EventosController < ApplicationController
     end
 
     def grupos
-      @grupo = Grupo.find(1)
+      @grupo = Grupo.obtener_grupo_publico
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

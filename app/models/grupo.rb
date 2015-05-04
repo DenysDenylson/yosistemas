@@ -1,4 +1,4 @@
-class Grupo < ActiveRecord::Base
+class Grupo < ActiveRecord::Base    
     
     belongs_to :usuario
     has_and_belongs_to_many :temas
@@ -40,6 +40,14 @@ class Grupo < ActiveRecord::Base
         end
       end
       return resp
+    end
+
+    def grupo_publico?
+      respuesta = false
+      if llave=='publico' 
+        resp = true
+      end
+      respuesta
     end
 
     def correspondeAGrupo(nombre)
@@ -89,10 +97,20 @@ class Grupo < ActiveRecord::Base
       temas_aprobados = Array.new
       temas.each do |tema|
         if tema.aprobado?(id) || llave == "publico"
-          temas_aprobados << tema
+          temas_aprobados.unshift tema
         end
       end
-      return temas_aprobados
+      temas_aprobados
+    end
+
+    def eventos_aprobados
+      eventos_aprobados = Array.new
+      eventos.each do |evento|
+        if evento.aprobado?(id) || llave == "publico"
+          eventos_aprobados << evento
+        end
+      end
+      return eventos_aprobados
     end
 
     def self.obtener_grupo_publico

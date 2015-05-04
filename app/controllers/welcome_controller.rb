@@ -5,14 +5,9 @@ class WelcomeController < ApplicationController
   end
 
   def no_existe
-  	
   end
 
   def grupos
-   if(params[:id] != nil && Grupo.find(params[:id]).habilitado)
-    @grupo = Grupo.find(params[:id])
-  else
-    @grupo = Grupo.find(1)
- end
- end
+    @grupo = Grupo.buscar(params[:id])
+  end
 end

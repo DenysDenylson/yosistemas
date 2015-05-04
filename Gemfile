@@ -54,6 +54,7 @@ gem "nested_form"
 
 gem 'bootstrap_form'
 
+gem 'draper'
 
 #gem "protected_attributes", "~> 1.0.5"
 

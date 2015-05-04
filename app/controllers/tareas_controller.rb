@@ -1,19 +1,15 @@
 require 'pusher'
 class TareasController < ApplicationController
+
 	#GET tareas
 	def index
-		if( params[:grupo] != nil && Grupo.find(params[:grupo]).habilitado)
-       	@grupo = Grupo.find(params[:grupo])
-    	else
-       	@grupo = Grupo.find(1)
-       	redirect_to temas_path
-    	end
-    	if(params[:grupo]=="1")
+  		@grupo = Grupo.buscar(params[:grupo])
+    	if(@grupo.grupo_publico?)
       		redirect_to temas_path
-    	else
-      		@tareas = @grupo.tareas.order("updated_at DESC").page(params[:page]).per(5)
     	end
+      	@tareas = @grupo.tareas.order("updated_at DESC").page(params[:page]).per(5)
 	end
+
 	#GET tareas/new
 	def responder_tarea
 		@responder_tarea = ResponderTarea.new

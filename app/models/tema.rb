@@ -1,4 +1,5 @@
 class Tema < ActiveRecord::Base
+
   serialize :grupos_pertenece, Array
   serialize :grupos_dirigidos, Array
   has_many :tema_comentarios
@@ -9,6 +10,8 @@ class Tema < ActiveRecord::Base
   validates :titulo, :cuerpo, :presence => { :message => " es requerido" }
   delegate :nombre_usuario, :correo, :to => :usuario, :prefix => true
   delegate :nombre, :to => :grupo, :prefix => true
+
+
 
   def correspondeATitulo(titulo)
     parametros = titulo.split(' ')
