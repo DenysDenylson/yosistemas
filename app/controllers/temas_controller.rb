@@ -125,7 +125,7 @@ before_filter :grupos
       @tema.save
 
       add_attached_files(@tema.id)
-      add_suscripcion(current_user.id, @tema.id) #Llevado a un metodo privado
+      add_suscripcion(current_user.id, @tema.id) #Llevado a un metodo privado para hacer mas ligero el codigo
       
       if current_user.rol == "Docente"        
         notificacion_push(params[:grupos], @tema)
